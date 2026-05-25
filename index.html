@@ -3,27 +3,438 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Image Search Engine</title>
+    <title>Lumina // Developer's Smart Image Workspace & Asset Studio</title>
+    <meta name="description" content="Search stock images, extract palette colors, check WCAG contrast, brand-shift photos, overlay text with a rule-of-thirds canvas editor, and generate responsive web asset code." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="sytle.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>Image Search Engine</h1>
-    <form id="search-form">
-      <input
-        type="text"
-        id="search-box"
-        placeholder="Search anything here ..."
-      />
-      <button>Search</button>
-    </form>
-    <div id="search-result"></div>
-    <button id="show-more-btn">Show more</button>
+    <!-- App Container -->
+    <div class="app-container">
+      <!-- Header -->
+      <header class="app-header">
+        <div class="logo-area">
+          <div class="logo-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2z" fill="url(#logo-grad)" />
+              <defs>
+                <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#a855f7" />
+                  <stop offset="100%" stop-color="#6366f1" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <h1>Lumina</h1>
+          <span class="version-tag">v2.0</span>
+        </div>
+        <p class="subtitle">The Developer's Smart Stock Search, Palette Harvester & Live Asset Pipeline</p>
+      </header>
+
+      <!-- Search Section -->
+      <section class="search-section">
+        <form id="search-form">
+          <div class="search-input-wrapper">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input
+              type="text"
+              id="search-box"
+              placeholder="Search high-res stock photos (e.g., minimalist workspace, futuristic tech)..."
+              autocomplete="off"
+            />
+            <button type="submit" class="search-btn">Search Assets</button>
+          </div>
+
+          <!-- Advanced Filters Panel -->
+          <div class="filters-row">
+            <div class="filter-group">
+              <label for="filter-orientation">Orientation</label>
+              <select id="filter-orientation">
+                <option value="all">All Orientations</option>
+                <option value="landscape">Landscape</option>
+                <option value="portrait">Portrait</option>
+                <option value="squarish">Square</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="filter-color">Dominant Hue</label>
+              <select id="filter-color">
+                <option value="all">Any Tone</option>
+                <option value="black_and_white">Monochrome</option>
+                <option value="teal">Teal / Cyan</option>
+                <option value="blue">Deep Blue</option>
+                <option value="purple">Violet / Magenta</option>
+                <option value="orange">Warm Orange</option>
+                <option value="green">Nature Green</option>
+                <option value="yellow">Sunny Yellow</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="filter-composition">Composition Feature</label>
+              <select id="filter-composition">
+                <option value="any">Standard Stock</option>
+                <option value="copyspace">Rule-of-Thirds Copyspace (Text Safe)</option>
+                <option value="minimalist">Ultra Minimalist / Clean Backdrop</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="api-mode">Engine Provider</label>
+              <select id="api-mode">
+                <option value="unsplash">Unsplash API (Live)</option>
+                <option value="mock">Fallback Engine (Mock Offline)</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <!-- Gallery Grid -->
+      <main class="gallery-container">
+        <!-- Results stats or notification banners -->
+        <div class="gallery-status" id="gallery-status" style="display: none;"></div>
+        
+        <!-- The Grid -->
+        <div id="search-result" class="image-grid">
+          <!-- Dynamically populated card items -->
+          <div class="welcome-card">
+            <div class="welcome-card-glow"></div>
+            <h3>Engineered for Web Creators</h3>
+            <p>Search over 3 million stock photos with integrated design-engineering toolkits. Extract color schemes, verify accessibilities, harmonize brand tones, and write pixel-perfect layout code on the fly.</p>
+            <div class="tag-row">
+              <span class="badge">k-Means Palette Extraction</span>
+              <span class="badge">WCAG 2.1 Contrast Checker</span>
+              <span class="badge">SVG Color Matrix filters</span>
+              <span class="badge">Banner canvas layout studio</span>
+              <span class="badge">Responsive srcset output</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Show More CTA -->
+        <div class="pagination-area">
+          <button id="show-more-btn" class="show-more-btn">
+            <span>Show More Images</span>
+            <svg class="chevron-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+        </div>
+      </main>
+
+      <!-- Workspace Slide-out Panel (Modal Overlay) -->
+      <div id="workspace-modal" class="workspace-overlay">
+        <div class="workspace-card">
+          <!-- Modal Close Header -->
+          <div class="workspace-header">
+            <div class="header-details">
+              <h2>Asset Developer Workspace</h2>
+              <p id="asset-meta-title">Photo by John Doe via Unsplash</p>
+            </div>
+            <button id="close-modal-btn" class="close-btn" aria-label="Close Workspace">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Workspace Body Layout -->
+          <div class="workspace-body">
+            <!-- Left Side: Image display, Brand Controls -->
+            <div class="workspace-preview-pane">
+              <div class="workspace-image-container">
+                <img id="workspace-main-image" src="" alt="Selected workspace photo" crossorigin="anonymous" />
+                <div id="image-loader" class="image-loader">
+                  <div class="spinner"></div>
+                  <span>Extracting pixels...</span>
+                </div>
+              </div>
+              
+              <!-- Brand Shifter (SVG Matrix Duotone) Controls -->
+              <div class="preview-tools-card">
+                <div class="tool-title-row">
+                  <h4>SVG Brand Harmonizer</h4>
+                  <label class="switch">
+                    <input type="checkbox" id="toggle-duotone" />
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <p class="tool-desc">Maps highlights and shadows to custom brand hues via hardware-accelerated SVG matrix filters.</p>
+                <div class="color-picker-row">
+                  <div class="picker-input-group">
+                    <label>Shadow Tone (Dark)</label>
+                    <div class="picker-color-preview" id="shadow-preview-color" style="background-color: #0b0f19;">
+                      <input type="color" id="picker-shadow" value="#0b0f19" />
+                    </div>
+                  </div>
+                  <div class="picker-input-group">
+                    <label>Highlight Tone (Light)</label>
+                    <div class="picker-color-preview" id="highlight-preview-color" style="background-color: #a855f7;">
+                      <input type="color" id="picker-highlight" value="#a855f7" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Side: Interaction Workbenches (Tabs) -->
+            <div class="workspace-control-pane">
+              <!-- Tab Navigation -->
+              <div class="workspace-tabs">
+                <button class="tab-btn active" data-tab="tab-palette">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 14.7255 3.09032 17.1962 4.85857 19C5.32831 19.4975 6.01255 19.5359 6.53676 19.2319C6.98295 18.9732 7.27552 18.5132 7.27552 18C7.27552 16.8954 8.17095 16 9.27552 16H11.2755C12.3801 16 13.2755 15.1046 13.2755 14C13.2755 13.4477 13.7232 13 14.2755 13H15.2755C16.3801 13 17.2755 12.1046 17.2755 11C17.2755 9.89543 18.1709 9 19.2755 9H20.454C21.3288 9 21.9472 8.16335 21.7242 7.31718C20.897 4.1775 18.0244 2 14.5 2" />
+                  </svg>
+                  <span>Palette & Contrast</span>
+                </button>
+                <button class="tab-btn" data-tab="tab-codegen">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="16 18 22 12 16 6"></polyline>
+                    <polyline points="8 6 2 12 8 18"></polyline>
+                  </svg>
+                  <span>Asset Code Gen</span>
+                </button>
+                <button class="tab-btn" data-tab="tab-studio">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                  <span>Studio Editor</span>
+                </button>
+              </div>
+
+              <!-- Tab Contents -->
+              <div class="tab-content-area">
+                
+                <!-- TAB 1: Palette & Contrast Checker -->
+                <div id="tab-palette" class="tab-panel active">
+                  <div class="panel-section">
+                    <h5>Extracted Palette Swatches</h5>
+                    <p class="panel-section-desc">Extracted from image bitmap using median-cut approximation. Click any swatch to copy Hex.</p>
+                    <div class="swatches-container" id="palette-swatches">
+                      <!-- Rendered by Javascript -->
+                      <div class="swatch-placeholder">Analyzing image bytes...</div>
+                    </div>
+                  </div>
+
+                  <div class="panel-section">
+                    <h5>WCAG 2.1 Accessibility Evaluator</h5>
+                    <p class="panel-section-desc">Tests text overlay contrast using standard W3C formulas for AA/AAA ratings.</p>
+                    <div class="contrast-workbench">
+                      <!-- Selector row -->
+                      <div class="selectors-row">
+                        <div class="select-color-box">
+                          <label>Text Color</label>
+                          <div class="swatch-select-dropdown" id="text-swatch-dropdown">
+                            <!-- Custom dropdown populated dynamically -->
+                          </div>
+                        </div>
+                        <div class="swap-colors-btn" id="swap-contrast-colors" title="Swap Colors">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="17 1 21 5 17 9"></polyline>
+                            <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                            <polyline points="7 23 3 19 7 15"></polyline>
+                            <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                          </svg>
+                        </div>
+                        <div class="select-color-box">
+                          <label>Backing Color</label>
+                          <div class="swatch-select-dropdown" id="bg-swatch-dropdown">
+                            <!-- Custom dropdown populated dynamically -->
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Display results -->
+                      <div class="contrast-output-card">
+                        <div class="contrast-metric">
+                          <span class="ratio-label">Contrast Ratio</span>
+                          <span class="ratio-value" id="contrast-ratio-val">4.5:1</span>
+                        </div>
+                        <div class="contrast-verdicts">
+                          <div class="verdict-item">
+                            <span class="verdict-label">Normal Text (16px)</span>
+                            <span class="verdict-badge pass" id="verdict-normal">AA Pass</span>
+                          </div>
+                          <div class="verdict-item">
+                            <span class="verdict-label">Large Text (>18px bold)</span>
+                            <span class="verdict-badge pass" id="verdict-large">AAA Pass</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Text Preview Area -->
+                      <div class="contrast-preview-text" id="contrast-text-preview">
+                        <h6>Dynamic Contrast Live Preview</h6>
+                        <p>This sandbox displays standard typography elements configured with your chosen values. Ensure ratios exceed 4.5:1 for standard text (AA) or 7.0:1 for absolute accessibility (AAA).</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- TAB 2: Asset Code Generator -->
+                <div id="tab-codegen" class="tab-panel">
+                  <div class="panel-section">
+                    <h5>Responsive Code Generator</h5>
+                    <p class="panel-section-desc">Ready-to-deploy markup for your projects, optimized for fast loading speeds.</p>
+                    
+                    <div class="code-formats-bar">
+                      <button class="code-format-btn active" data-format="html-srcset">HTML + Srcset</button>
+                      <button class="code-format-btn" data-format="react-jsx">React Component</button>
+                      <button class="code-format-btn" data-format="css-lazy">CSS Responsive</button>
+                    </div>
+
+                    <div class="code-output-container">
+                      <div class="code-header">
+                        <span id="code-format-title">HTML (srcset + placeholders)</span>
+                        <button id="copy-code-btn" class="copy-btn">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                          </svg>
+                          <span>Copy Snippet</span>
+                        </button>
+                      </div>
+                      <pre><code id="code-display" class="language-html">Loading template...</code></pre>
+                    </div>
+
+                    <!-- Placeholders Info -->
+                    <div class="tip-card">
+                      <div class="tip-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <line x1="12" y1="16" x2="12" y2="12"></line>
+                          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        <span>Dynamic SVG Blur Previews</span>
+                      </div>
+                      <p>The code outputs contain inline base64-encoded micro SVGs created from your extracted palette. This creates a gorgeous progressive blur load effect without blocking page render.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- TAB 3: Studio Editor -->
+                <div id="tab-studio" class="tab-panel">
+                  <div class="panel-section">
+                    <h5>Social Overlay & Banner Workspace</h5>
+                    <p class="panel-section-desc">Generate promotional cards, headers, and social sharing banners. Renders client-side onto high-res canvas.</p>
+                    
+                    <div class="studio-inputs">
+                      <div class="form-group">
+                        <label for="studio-heading">Heading Text</label>
+                        <input type="text" id="studio-heading" value="Discover the Unknown" placeholder="Enter headline..." />
+                      </div>
+                      <div class="form-group">
+                        <label for="studio-subheading">Subheading / Description</label>
+                        <input type="text" id="studio-subheading" value="A curated showcase of aesthetic elements." placeholder="Enter supporting copy..." />
+                      </div>
+                      <div class="form-group">
+                        <label for="studio-cta">Button Call-to-Action</label>
+                        <input type="text" id="studio-cta" value="Explore Now" placeholder="Optional button text..." />
+                      </div>
+                      
+                      <!-- Overlay Grid Controls -->
+                      <div class="grid-controls-row">
+                        <div class="control-box">
+                          <label>Text Position (Grid alignment)</label>
+                          <div class="layout-grid-selector">
+                            <button class="grid-cell" data-pos="top-left" title="Top Left"></button>
+                            <button class="grid-cell" data-pos="top-center" title="Top Center"></button>
+                            <button class="grid-cell" data-pos="top-right" title="Top Right"></button>
+                            <button class="grid-cell" data-pos="middle-left" title="Middle Left"></button>
+                            <button class="grid-cell active" data-pos="middle-center" title="Center"></button>
+                            <button class="grid-cell" data-pos="middle-right" title="Middle Right"></button>
+                            <button class="grid-cell" data-pos="bottom-left" title="Bottom Left"></button>
+                            <button class="grid-cell" data-pos="bottom-center" title="Bottom Center"></button>
+                            <button class="grid-cell" data-pos="bottom-right" title="Bottom Right"></button>
+                          </div>
+                        </div>
+                        <div class="control-box text-align-controls">
+                          <label>Typography Styles</label>
+                          <div class="btn-group">
+                            <button id="studio-align-left" class="style-icon-btn" title="Align Left">L</button>
+                            <button id="studio-align-center" class="style-icon-btn active" title="Align Center">C</button>
+                            <button id="studio-align-right" class="style-icon-btn" title="Align Right">R</button>
+                          </div>
+                          <div class="btn-group mt-2">
+                            <button id="studio-font-sans" class="style-icon-btn active" title="Outfit Sans">Sans</button>
+                            <button id="studio-font-serif" class="style-icon-btn" title="Georgia Serif">Serif</button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Aesthetics sliders -->
+                      <div class="sliders-card">
+                        <div class="slider-group">
+                          <div class="slider-label-row">
+                            <span>Vignette Overlay (Contrast protection)</span>
+                            <span id="vignette-val">45%</span>
+                          </div>
+                          <input type="range" id="slider-vignette" min="0" max="100" value="45" />
+                        </div>
+                        
+                        <div class="slider-group">
+                          <div class="slider-label-row">
+                            <span>Backdrop Blur Filter (Canvas level)</span>
+                            <span id="blur-val">0px</span>
+                          </div>
+                          <input type="range" id="slider-blur" min="0" max="20" value="0" />
+                        </div>
+
+                        <div class="slider-group">
+                          <div class="slider-label-row">
+                            <span>Text Shadow Protection</span>
+                            <span id="shadow-intensity-val">60%</span>
+                          </div>
+                          <input type="range" id="slider-shadow" min="0" max="100" value="60" />
+                        </div>
+                      </div>
+
+                      <!-- Download & Copy Action buttons -->
+                      <div class="studio-actions-row">
+                        <button id="download-banner-btn" class="studio-btn primary-btn">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                          </svg>
+                          <span>Download High-Res PNG</span>
+                        </button>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Real-time Canvas Renderer (Hidden or used inside editor modal preview) -->
+    <canvas id="hidden-extraction-canvas" style="display: none;"></canvas>
+    
+    <!-- SVG filters for brand duotone mapping -->
+    <svg style="position: absolute; width: 0; height: 0; pointer-events: none;" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="svg-brand-filter">
+          <feColorMatrix type="matrix" id="duotone-matrix-el"
+            values="1 0 0 0 0
+                    0 1 0 0 0
+                    0 0 1 0 0
+                    0 0 0 1 0" />
+        </filter>
+      </defs>
+    </svg>
+
     <script src="script.js"></script>
   </body>
 </html>
